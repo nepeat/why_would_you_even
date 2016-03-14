@@ -3,6 +3,7 @@ import asyncio
 import os
 import re
 import redis
+import signal
 
 redis_client = redis.StrictRedis(
     host=os.environ.get("REDIS_HOST", "127.0.0.1"),
@@ -38,7 +39,15 @@ async def on_message(message):
 if "example.com" in os.environ["DISCORD_USERNAME"]:
     raise ValueError("Please set your DISCORD_USERNAME to a valid username.")
 
-client.run(
-    os.environ["DISCORD_USERNAME"],
-    os.environ["DISCORD_PASSWORD"]
-)
+def sig_handler(sig, frame):
+    print("Caught signal %s." % sig)
+    # code that kills pubsub here
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
+
+    client.run(
+        os.environ["DISCORD_USERNAME"],
+        os.environ["DISCORD_PASSWORD"]
+    )
