@@ -1,3 +1,4 @@
+var util = require("util");
 var redis = require("redis");
 
 var redis_host = process.env.REDIS_HOST || "127.0.0.1";
@@ -62,7 +63,7 @@ pubsub.on("message", function (channel, message) {
 		try {
 			say(data.channel, result);
 		} catch(e) {
-			say(data.channel, String.format("An exception happened.\n```%s```", e));
+			say(data.channel, util.format("An exception happened.\n```%s```", e));
 		}
 	}
 });
