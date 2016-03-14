@@ -3,6 +3,7 @@ import asyncio
 import os
 import re
 import redis
+import json
 import signal
 
 redis_client = redis.StrictRedis(
@@ -15,6 +16,12 @@ client = discord.Client()
 
 commands = {}
 
+def load_commands():
+    try:
+        commands.update(json.loads(redis_client.get("bot:commands")))
+    except (TypeError, ValueError):
+        pass
+
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -25,17 +32,18 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startswith('!test'):
-        counter = 0
-        tmp = await client.send_message(message.channel, 'Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
+    if message.content.startswith('!help'):
+        output = ""
 
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
+        for command, meta in commands.items():
+            output += "**{command}** {help}\n".format(
+                command=command,
+                help=meta["help"]
+            )
+        await client.send_message(message.channel, output.strip())
+    elif message.content.startswith('!ping'):
+        await client.send_message(message.channel, 'Bot is alive.')
+
 if "example.com" in os.environ["DISCORD_USERNAME"]:
     raise ValueError("Please set your DISCORD_USERNAME to a valid username.")
 
