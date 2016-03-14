@@ -40,7 +40,11 @@ async def on_message(message):
                 command=command,
                 help=meta["help"]
             )
-        await client.send_message(message.channel, output.strip())
+
+        if output.strip() == "":
+            await client.send_message(message.channel, "No external commands have been loaded.")
+        else:
+            await client.send_message(message.channel, output.strip())
     elif message.content.startswith('!ping'):
         await client.send_message(message.channel, 'Bot is alive.')
 
