@@ -22,8 +22,30 @@ def load_commands(ps_message=None):
     except (TypeError, ValueError):
         pass
 
-def on_pubsub(ps_message):
-    print(ps_message)
+async def on_pubsub():
+    try:
+        data = json.loads(message['data'])
+    except ValueError:
+        print("ValueError trying to parse '%s'" % (message["data"]))
+        return
+
+    if "action" not in data:
+        return
+
+    if data["action"] == "reload":
+        load_commands()
+    elif data["action"] == "say":
+        if "channel" not in data or "text" not in data:
+            return
+
+        channel = await client.get_channel(data["channel"])
+
+        if channel:
+            await client.send_message(channel, data["text"])
+    else:
+        pass
+
+    return
 
 @client.event
 async def on_ready():
@@ -35,6 +57,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    print(message)
     if message.content.startswith('!help'):
         output = ""
 
