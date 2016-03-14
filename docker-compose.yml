@@ -1,0 +1,7 @@
+redis:
+  build: redis
+
+core:
+  build: core
+  links:
+    - redis:redis
