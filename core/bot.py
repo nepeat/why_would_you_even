@@ -21,12 +21,7 @@ async def get_redis():
 
 async def load_commands():
     redis_client = await get_redis()
-    try:
-        commands.clear()
-        rawcommands = await redis_client.get("bot:commands")
-        commands.update(json.loads(rawcommands))
-    except (TypeError, ValueError):
-        pass
+    commands = await redis_client.hgetall("bot:commands")
 
     print("Loaded %s commands." % (len(commands)))
 
