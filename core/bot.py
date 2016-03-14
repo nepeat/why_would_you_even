@@ -4,7 +4,6 @@ import os
 import re
 import redis
 import json
-import signal
 
 redis_client = redis.StrictRedis(
     host=os.environ.get("REDIS_HOST", "127.0.0.1"),
@@ -54,20 +53,28 @@ async def on_message(message):
 if "example.com" in os.environ["DISCORD_USERNAME"]:
     raise ValueError("Please set your DISCORD_USERNAME to a valid username.")
 
-def sig_handler(sig, frame):
-    print("Caught signal %s." % sig)
-    psthread.stop()
-
 if __name__ == "__main__":
-    signal.signal(signal.SIGTERM, sig_handler)
-    signal.signal(signal.SIGINT, sig_handler)
-
     # Pubsub
     ps = redis_client.pubsub(ignore_subscribe_messages=True)
-    ps.psubscribe(**{"core:reload": load_commands, "core:*": on_pubsub})
+    ps.psubscribe(**{"core:*": on_pubsub})
     psthread = ps.run_in_thread(sleep_time=0.01)
 
-    client.run(
-        os.environ["DISCORD_USERNAME"],
-        os.environ["DISCORD_PASSWORD"]
-    )
+    try:
+        client.loop.run_until_complete(client.start(
+            os.environ["DISCORD_USERNAME"],
+            os.environ["DISCORD_PASSWORD"]
+        ))
+    except KeyboardInterrupt:
+        print("Stoping bot.")
+        client.loop.run_until_complete(client.logout())
+        pending = asyncio.Task.all_tasks()
+        gathered = asyncio.gather(*pending)
+        try:
+            gathered.cancel()
+            client.loop.run_forever()
+            gathered.exception()
+        except:
+            pass
+    finally:
+        client.loop.close()
+        psthread.stop()
