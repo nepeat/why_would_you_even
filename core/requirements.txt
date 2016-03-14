@@ -1,6 +1,8 @@
 aiohttp==0.21.4
+asyncio-redis==0.14.2
 chardet==2.3.0
 git+https://github.com/Rapptz/discord.py@async
+hiredis==0.2.0
 redis==2.10.5
 websockets==2.7
 wheel==0.24.0
