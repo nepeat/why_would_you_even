@@ -5,6 +5,9 @@ import sys
 import re
 import asyncio_redis
 import json
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 COMMAND_PREFIX = r"!"
 
@@ -20,10 +23,13 @@ async def get_redis():
     )
 
 async def load_commands():
+    global commands
+
     redis_client = await get_redis()
-    commands = await redis_client.hgetall("bot:commands")
+    commands = await redis_client.hgetall_asdict("bot:commands")
 
     print("Loaded %s commands." % (len(commands)))
+    redis_client.close()
 
 async def on_pubsub(ps_message):
     print(ps_message)
@@ -77,7 +83,7 @@ async def on_message(message):
         for command, meta in commands.items():
             output += "**{command}** {help}\n".format(
                 command=command,
-                help=meta["help"]
+                help=meta
             )
 
         if output.strip() == "":
@@ -87,7 +93,7 @@ async def on_message(message):
     elif message.content.startswith(COMMAND_PREFIX + "ping"):
         await client.send_message(message.channel, 'Core is alive.')
     else:
-        for command, meta in commands.items():
+        for command in commands:
             if re.search(r"^" + COMMAND_PREFIX + command, message.content, re.I):
                 await redis_client.publish("command:" + command, json.dumps({
                     "message": {

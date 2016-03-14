@@ -9,3 +9,11 @@ services:
     env_file: .env
     environment:
       - REDIS_HOST=redis
+  nodecmd:
+    build: javascript
+    links:
+      - redis:redis
+    environment:
+      - REDIS_HOST=redis
+    cap_drop:
+      - ALL
