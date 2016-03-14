@@ -53,6 +53,11 @@ async def on_pubsub(ps_message):
 
         if channel:
             await client.send_message(channel, data["text"])
+    elif data["action"] == "game":
+        if "game" not in data:
+            return
+
+        await client.change_status(discord.Game(data["game"]))
 
 @client.event
 async def on_ready():

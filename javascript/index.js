@@ -57,6 +57,13 @@ pubsub.on("message", function (channel, message) {
 			}
 
 			break;
+		case "game":
+			client.publish("core:game", JSON.stringify({
+				action: "game",
+				game: args
+			}));
+			results = "Game set to " + args;
+			break;
 	}
 
 	if (results && results !== "") {
@@ -72,7 +79,10 @@ function init_pubsub() {
 	pubsub.subscribe("command:node_eval")
 }
 
-client.hset("bot:commands", "node_eval", "It does an eval on the node container. The pain begins here.", function(err, reply) {
+client.hmset("bot:commands", [
+	"node_eval", "It does an eval on the node container. The pain begins here.",
+	"game", "Sets the bot game status."
+], function(err, reply) {
 	console.log("Registered in commands dict!");
 
 	client.publish("core:reload", JSON.stringify({
