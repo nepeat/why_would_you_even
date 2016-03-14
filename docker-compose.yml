@@ -5,3 +5,5 @@ core:
   build: core
   links:
     - redis:redis
+  environment:
+    - REDIS_HOST=redis
