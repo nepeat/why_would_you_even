@@ -17,6 +17,7 @@ commands = {}
 
 def load_commands(ps_message=None):
     try:
+        commands.clear()
         commands.update(json.loads(redis_client.get("bot:commands")))
     except (TypeError, ValueError):
         pass
