@@ -16,11 +16,14 @@ client = discord.Client()
 
 commands = {}
 
-def load_commands():
+def load_commands(ps_message=None):
     try:
         commands.update(json.loads(redis_client.get("bot:commands")))
     except (TypeError, ValueError):
         pass
+
+def on_pubsub(ps_message):
+    print(ps_message)
 
 @client.event
 async def on_ready():
@@ -53,11 +56,16 @@ if "example.com" in os.environ["DISCORD_USERNAME"]:
 
 def sig_handler(sig, frame):
     print("Caught signal %s." % sig)
-    # code that kills pubsub here
+    psthread.stop()
 
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
+
+    # Pubsub
+    ps = redis_client.pubsub(ignore_subscribe_messages=True)
+    ps.psubscribe(**{"core:reload": load_commands, "core:*": on_pubsub})
+    psthread = ps.run_in_thread(sleep_time=0.01)
 
     client.run(
         os.environ["DISCORD_USERNAME"],
