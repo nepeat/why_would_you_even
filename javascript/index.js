@@ -61,7 +61,7 @@ pubsub.on("message", function (channel, message) {
 
 	if (results && results !== "") {
 		try {
-			say(data.channel, result);
+			say(data.channel, results);
 		} catch(e) {
 			say(data.channel, util.format("An exception happened.\n```%s```", e));
 		}
