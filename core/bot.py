@@ -6,8 +6,9 @@ import re
 import asyncio_redis
 import json
 
-client = discord.Client()
+COMMAND_PREFIX = r"!"
 
+client = discord.Client()
 commands = {}
 
 async def get_redis():
@@ -73,8 +74,9 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message)
-    if message.content.startswith('!help'):
+    redis_client = await get_redis()
+
+    if message.content.startswith(COMMAND_PREFIX + "help"):
         output = ""
 
         for command, meta in commands.items():
@@ -87,13 +89,25 @@ async def on_message(message):
             await client.send_message(message.channel, "No external commands have been loaded.")
         else:
             await client.send_message(message.channel, output.strip())
-    elif message.content.startswith('!ping'):
-        await client.send_message(message.channel, 'Bot is alive.')
-    elif message.content.startswith("!debug"):
-        await client.send_message(message.channel, "<@{uid}> You are UID {uid}. This channel's ID is {cid}".format(
-            uid=message.author.id,
-            cid=message.channel.id
-        ))
+    elif message.content.startswith(COMMAND_PREFIX + "ping"):
+        await client.send_message(message.channel, 'Core is alive.')
+    else:
+        for command, meta in commands.items():
+            if re.search(r"^" + COMMAND_PREFIX + command, message.content, re.I):
+                await redis_client.publish("command:" + command, json.dumps({
+                    "message": {
+                        "id": message.id,
+                        "content": message.content
+                    },
+                    "channel": message.channel.id,
+                    "author": {
+                        "id": message.author.id,
+                        "name": message.author.name,
+                        "discriminator": message.author.discriminator
+                    }
+                }))
+
+    redis_client.close()
 
 if "example.com" in os.environ["DISCORD_USERNAME"]:
     raise ValueError("Please set your DISCORD_USERNAME to a valid username.")
