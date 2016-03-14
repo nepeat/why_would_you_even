@@ -35,6 +35,8 @@ async def on_message(message):
     elif message.content.startswith('!sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
+if "example.com" in os.environ["DISCORD_USERNAME"]:
+    raise ValueError("Please set your DISCORD_USERNAME to a valid username.")
 
 client.run(
     os.environ["DISCORD_USERNAME"],

@@ -1,9 +1,11 @@
-redis:
-  build: redis
-
-core:
-  build: core
-  links:
-    - redis:redis
-  environment:
-    - REDIS_HOST=redis
+version: '2'
+services:
+  redis:
+    build: redis
+  core:
+    build: core
+    links:
+      - redis:redis
+    env_file: .env
+    environment:
+      - REDIS_HOST=redis
