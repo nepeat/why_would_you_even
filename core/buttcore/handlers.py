@@ -4,9 +4,11 @@ import buttcore
 from buttcore import client, handler
 from buttcore.util import load_commands
 
+
 @handler("reload")
 async def reload(data):
     await load_commands(buttcore.commands)
+
 
 @handler("say")
 async def say(data):
@@ -17,6 +19,7 @@ async def say(data):
 
     if channel:
         await client.send_message(channel, data["text"])
+
 
 @handler("game")
 async def game(data):

@@ -15,11 +15,13 @@ client = discord.Client()
 commands = {}
 core_handlers = {}
 
+
 def handler(action, **kwargs):
     def decorator(f):
         core_handlers[action] = f
         return f
     return decorator
+
 
 async def on_pubsub(ps_message):
     log.info(ps_message)
@@ -34,6 +36,7 @@ async def on_pubsub(ps_message):
     for handler, callback in core_handlers.items():
         if action == handler:
             await callback(data)
+
 
 @client.event
 async def on_ready():
@@ -53,6 +56,7 @@ async def on_ready():
 
     # When finished, close the connection.
     redis_client.close()
+
 
 @client.event
 async def on_message(message):

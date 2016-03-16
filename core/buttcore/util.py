@@ -18,6 +18,7 @@ async def load_commands(commandlist):
     commandlist.clear()
     commandlist.update(newcommands)
 
+
 def jsonify_message(message):
     return json.dumps({
         "message": {
@@ -31,6 +32,7 @@ def jsonify_message(message):
             "discriminator": message.author.discriminator
         }
     })
+
 
 def create_token_cache(username, token):
     filename = hashlib.md5(username.encode('utf-8')).hexdigest()
