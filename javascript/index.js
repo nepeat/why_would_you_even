@@ -1,5 +1,5 @@
-var util = require("util");
-var redis = require("redis");
+var util = require("util"),
+	redis = require("redis");
 
 var redis_host = process.env.REDIS_HOST || "127.0.0.1";
 var redis_port = process.env.REDIS_PORT || 6379;
