@@ -1,18 +1,11 @@
 var util = require("util"),
 	redis = require("redis");
 
-var redis_host = process.env.REDIS_HOST || "127.0.0.1";
-var redis_port = process.env.REDIS_PORT || 6379;
+var redis_host = process.env.REDIS_HOST || "127.0.0.1",
+	redis_port = process.env.REDIS_PORT || 6379;
 
-var client = redis.createClient(redis_port, redis_host);
-var pubsub = redis.createClient(redis_port, redis_host);
-
-function say(channel, text) {
-	client.publish("core:say", JSON.stringify({
-		channel: channel,
-		"text": text
-	}));
-}
+var client = redis.createClient(redis_port, redis_host),
+	pubsub = redis.createClient(redis_port, redis_host);
 
 function redis_error(err) {
 	console.log("[RedisError] " + err);
@@ -20,6 +13,13 @@ function redis_error(err) {
 
 client.on("error", redis_error);
 pubsub.on("error", redis_error);
+
+function say(channel, text) {
+	client.publish("core:say", JSON.stringify({
+		channel: channel,
+		"text": text
+	}));
+}
 
 pubsub.on("message", function (channel, message) {
 	try {
