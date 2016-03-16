@@ -37,10 +37,10 @@ async def on_pubsub(ps_message):
 
 @client.event
 async def on_ready():
-    log.info('Logged in as')
-    log.info(client.user.name)
-    log.info(client.user.id)
-    log.info('------')
+    log.info("Logged in as @%s (%s)" % (
+        client.user.name,
+        client.user.id
+    ))
     await load_commands(commands)
 
     redis_client = await get_redis()
