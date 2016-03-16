@@ -1,9 +1,11 @@
-language: node_js
+language: python
+cache:
+  - pip
 node_js:
   - "5"
 before_script:
-  - apt-get install python3 python3-pip
   - pip3 install flake8
+  - apt-get install nodejs npm
   - npm install -g eslint
 script:
   - cd javascript && eslint .
