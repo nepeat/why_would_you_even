@@ -88,7 +88,7 @@ async def on_message(message):
         output = ""
 
         for command, meta in commands.items():
-            output += "**{command}** {help}\n".format(
+            output += "**{command}** - {help}\n".format(
                 command=command,
                 help=meta
             )
