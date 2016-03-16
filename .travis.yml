@@ -1,9 +1,7 @@
 language: python
 cache:
   - pip
-node_js:
-  - "5"
-before_script:
+install:
   - pip3 install flake8
   - apt-get install nodejs npm
   - npm install -g eslint
