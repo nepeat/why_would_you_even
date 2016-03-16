@@ -23,6 +23,7 @@ $redis_pubsub = create_redis();
 // Registration
 $redis_data->hmset("bot:commands", array(
 	"brainfuck" => "Evals brainfuck code.",
+	"encrypt" => "Encrypts your strings!"
 ));
 
 // Bot
@@ -35,7 +36,7 @@ function say($redis, $channel, $message) {
 }
 
 $pubsub = $redis_pubsub->pubSubLoop();
-$pubsub->subscribe("command:brainfuck");
+$pubsub->subscribe("command:brainfuck", "command:encrypt");
 
 foreach ($pubsub as $message) {
 	if ($message->kind !== "message" && $message->kind !== "pmessage") {
@@ -61,6 +62,18 @@ foreach ($pubsub as $message) {
 			echo "Result = " . $result;
 			say($redis_data, $data->channel, $result);
 			break;
+		case "encrypt":
+			$result = sprintf("<@%s>
+**MD5** - %s
+**SHA1** - %s
+**SHA256** - %s",
+				$data->author->id,
+				md5($args),
+				hash("sha1", $args),
+				hash("sha256", $args)
+			);
+
+			say($redis_data, $data->channel, $result);
 			break;
 	}
 }
