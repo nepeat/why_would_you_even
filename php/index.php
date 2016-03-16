@@ -21,10 +21,12 @@ $redis_pubsub = create_redis();
 
 
 // Registration
-$redis_data->hmset("bot:commands", array(
+$commands = array(
 	"brainfuck" => "Evals brainfuck code.",
 	"encrypt" => "Encrypts your strings!"
-));
+);
+
+$redis_data->hmset("bot:commands", $commands);
 
 // Bot
 function say($redis, $channel, $message) {
@@ -35,7 +37,9 @@ function say($redis, $channel, $message) {
 }
 
 $pubsub = $redis_pubsub->pubSubLoop();
-$pubsub->subscribe("command:brainfuck", "command:encrypt");
+
+function make_channel($x) { return "command:" . $x; }
+$pubsub->subscribe(array_map('make_channel', array_keys($commands)));
 
 foreach ($pubsub as $message) {
 	if ($message->kind !== "message" && $message->kind !== "pmessage") {
@@ -56,9 +60,8 @@ foreach ($pubsub as $message) {
 		case "brainfuck":
 			echo "Brainfucking " . $args;
 
-			$result = shell_exec("php safe_brainfuck.php " . escapeshellarg($args));
+			$result = "```" . shell_exec("php safe_brainfuck.php " . escapeshellarg($args) . " 2>&1; echo $?") . "```";
 
-			echo "Result = " . $result;
 			say($redis_data, $data->channel, $result);
 			break;
 		case "encrypt":
