@@ -7,10 +7,11 @@ addons:
   apt:
     packages:
       - nodejs
-      - npm
 install:
   - pip install flake8
   - npm install eslint
+before_script:
+  - export PATH=$(npm bin):$PATH
 script:
-  - cd javascript && eslint .
-  - cd core && flake8 --exclude=env --max-line-length=120 --ignore=F401,E402 core
+  - eslint javascript
+  - flake8 --exclude=env --max-line-length=120 --ignore=F401,E402 core
