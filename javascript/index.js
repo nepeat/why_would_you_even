@@ -24,7 +24,7 @@ pubsub.on("error", redis_error);
 pubsub.on("message", function (channel, message) {
 	try {
 		var data = JSON.parse(message);
-	} catch(e) {
+	} catch (e) {
 		return;
 	}
 
@@ -38,7 +38,7 @@ pubsub.on("message", function (channel, message) {
 
 	console.log("DEBUG: %s || %s || %s", parts, command, args);
 
-	switch(command) {
+	switch (command) {
 		/* Zephy - Today at 1:54 AM
 			wut
 			all of them
@@ -50,7 +50,7 @@ pubsub.on("message", function (channel, message) {
 			console.log("Doing an eval on '%s'", args);
 			try {
 				results = eval(args);
-			} catch(e) {
+			} catch (e) {
 				results = e;
 			}
 
@@ -66,20 +66,20 @@ pubsub.on("message", function (channel, message) {
 	if (results && results !== "") {
 		try {
 			say(data.channel, results);
-		} catch(e) {
+		} catch (e) {
 			say(data.channel, util.format("An exception happened.\n```%s```", e));
 		}
 	}
 });
 
 function init_pubsub() {
-	pubsub.subscribe("command:node_eval")
+	pubsub.subscribe("command:node_eval");
 }
 
 client.hmset("bot:commands", [
 	"node_eval", "It does an eval on the node container. The pain begins here.",
 	"game", "Sets the bot game status."
-], function(err, reply) {
+], function(err, _reply) {
 	console.log("Registered in commands dict!");
 
 	client.publish("core:reload", "");
