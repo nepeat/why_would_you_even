@@ -62,6 +62,7 @@ foreach ($pubsub as $message) {
 			} else {
 				say($redis_data, $data->channel, "Got no results from the eval.");
 			}
+			break;
 	}
 }
 ?>
