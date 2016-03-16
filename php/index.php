@@ -29,7 +29,6 @@ $redis_data->hmset("bot:commands", array(
 // Bot
 function say($redis, $channel, $message) {
 	$redis->publish("core:say", json_encode(array(
-		"action" => "say",
 		"channel" => $channel,
 		"text" => $message
 	)));

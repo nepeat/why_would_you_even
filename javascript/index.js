@@ -9,7 +9,6 @@ var pubsub = redis.createClient(redis_port, redis_host);
 
 function say(channel, text) {
 	client.publish("core:say", JSON.stringify({
-		action: "say",
 		channel: channel,
 		"text": text
 	}));
@@ -59,7 +58,6 @@ pubsub.on("message", function (channel, message) {
 			break;
 		case "game":
 			client.publish("core:game", JSON.stringify({
-				action: "game",
 				game: args
 			}));
 			results = "Game set to " + args;
@@ -85,9 +83,7 @@ client.hmset("bot:commands", [
 ], function(err, reply) {
 	console.log("Registered in commands dict!");
 
-	client.publish("core:reload", JSON.stringify({
-		action: "reload"
-	}));
+	client.publish("core:reload", "");
 
 	init_pubsub();
 });
