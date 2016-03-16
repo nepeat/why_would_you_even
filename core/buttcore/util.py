@@ -18,7 +18,7 @@ async def load_commands(commandlist):
     commandlist.clear()
     commandlist.update(newcommands)
 
-async def jsonify_message(message):
+def jsonify_message(message):
     return json.dumps({
         "message": {
             "id": message.id,
