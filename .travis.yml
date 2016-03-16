@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "5"
+before_script:
+  - apt-get install python3 python3-pip
+  - pip3 install flake8
+  - npm install -g eslint
+script:
+  - cd javascript && eslint .
+  - cd core && flake8 --exclude=env --max-line-length=120 --ignore=F401,E402 core
