@@ -6,8 +6,10 @@ import json
 import logging
 
 from buttcore.database import get_redis
+from buttcore.util import load_commands
 
 logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 COMMAND_PREFIX = r"!"
 
@@ -16,51 +18,35 @@ if "example.com" in os.environ["DISCORD_USERNAME"]:
 
 client = discord.Client()
 commands = {}
+core_handlers = {}
 
-async def load_commands():
-    global commands
-
-    redis_client = await get_redis()
-    commands = await redis_client.hgetall_asdict("bot:commands")
-
-    print("Loaded %s commands." % (len(commands)))
-    redis_client.close()
+def handler(action, **kwargs):
+    def decorator(f):
+        core_handlers[action] = f
+        return f
+    return decorator
 
 async def on_pubsub(ps_message):
-    print(ps_message)
+    log.info(ps_message)
 
     try:
         data = json.loads(ps_message.value)
+        action = ps_message.channel.split(":", 2)[1]
     except ValueError:
-        print("ValueError trying to parse '%s'" % (ps_message.value))
+        log.error("ValueError trying to parse '%s'" % (ps_message.value))
         return
 
-    if "action" not in data:
-        return
-
-    if data["action"] == "reload":
-        await load_commands()
-    elif data["action"] == "say":
-        if "channel" not in data or "text" not in data:
-            return
-
-        channel = client.get_channel(str(data["channel"]))
-
-        if channel:
-            await client.send_message(channel, data["text"])
-    elif data["action"] == "game":
-        if "game" not in data:
-            return
-
-        await client.change_status(discord.Game(data["game"]))
+    for handler, callback in core_handlers.items():
+        if action == handler:
+            await callback(data)
 
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
-    await load_commands()
+    log.info('Logged in as')
+    log.info(client.user.name)
+    log.info(client.user.id)
+    log.info('------')
+    await load_commands(commands)
 
     redis_client = await get_redis()
     subscriber = await redis_client.start_subscribe()
@@ -109,3 +95,6 @@ async def on_message(message):
                 }))
 
     redis_client.close()
+
+# Import handlers last
+import buttcore.handlers
