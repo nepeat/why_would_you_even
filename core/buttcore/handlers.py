@@ -23,4 +23,4 @@ async def game(data):
     if "game" not in data:
         return
 
-    await client.change_status(discord.Game(data["game"]))
+    await client.change_status(discord.Game(name=data["game"]))
