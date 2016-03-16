@@ -14,17 +14,16 @@ function say(channel, text) {
 	}));
 }
 
-client.on("error", function (err) {
+function redis_error(err) {
 	console.log("[RedisError] " + err);
-});
+}
 
-pubsub.on("error", function (err) {
-	console.log("[RedisError] " + err);
-});
+client.on("error", redis_error);
+pubsub.on("error", redis_error);
 
 pubsub.on("message", function (channel, message) {
 	try {
-		var data = JSON.parse(message); 
+		var data = JSON.parse(message);
 	} catch(e) {
 		return;
 	}
