@@ -56,12 +56,11 @@ foreach ($pubsub as $message) {
 		case "brainfuck":
 			echo "Brainfucking " . $args;
 
-			$result = igorw\brainfuck\execute($args);
-			if (!empty($result)) {
-				say($redis_data, $data->channel, $result);
-			} else {
-				say($redis_data, $data->channel, "Got no results from the eval.");
-			}
+			$result = shell_exec("php safe_brainfuck.php " . escapeshellarg($args));
+
+			echo "Result = " . $result;
+			say($redis_data, $data->channel, $result);
+			break;
 			break;
 	}
 }
