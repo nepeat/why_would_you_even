@@ -2,9 +2,10 @@ import discord
 import asyncio
 import os
 import re
-import asyncio_redis
 import json
 import logging
+
+from buttcore.database import get_redis
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,14 +16,6 @@ if "example.com" in os.environ["DISCORD_USERNAME"]:
 
 client = discord.Client()
 commands = {}
-
-async def get_redis():
-    return await asyncio_redis.Connection.create(
-        host=os.environ.get("REDIS_HOST", "127.0.0.1"),
-        port=os.environ.get("REDIS_PORT", 6379),
-        db=os.environ.get("REDIS_DB", 0),
-        encoder=asyncio_redis.encoders.UTF8Encoder()
-    )
 
 async def load_commands():
     global commands
