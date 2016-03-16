@@ -1,7 +1,6 @@
 import discord
 import asyncio
 import os
-import re
 import json
 import logging
 
@@ -93,6 +92,7 @@ async def on_message(message):
                         "discriminator": message.author.discriminator
                     }
                 }))
+            if message.content.strip().lower().startswith(COMMAND_PREFIX + command):
 
     redis_client.close()
 
