@@ -16,5 +16,8 @@ RUN pip3 install -r requirements.txt
 # Bundle app source
 ADD . /app
 
+# Install main module
+RUN python3 setup.py install
+
 # Define default command.
-CMD ["python3", "bot.py"]
+CMD ["python3", "buttcore"]
