@@ -36,7 +36,7 @@ pubsub.on("message", function (channel, message) {
 	var command = parts[0].replace("!", "").trim();
 	var args = parts.slice(1).join(" ");
 
-	console.log("DEBUG: %s || %s || %s", parts, command, args)
+	console.log("DEBUG: %s || %s || %s", parts, command, args);
 
 	switch(command) {
 		/* Zephy - Today at 1:54 AM
