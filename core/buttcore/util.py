@@ -2,6 +2,7 @@ import os
 import hashlib
 import tempfile
 import logging
+import json
 
 from buttcore.database import get_redis
 
@@ -16,6 +17,20 @@ async def load_commands(commandlist):
 
     commandlist.clear()
     commandlist.update(newcommands)
+
+async def jsonify_message(message):
+    return json.dumps({
+        "message": {
+            "id": message.id,
+            "content": message.content
+        },
+        "channel": message.channel.id,
+        "author": {
+            "id": message.author.id,
+            "name": message.author.name,
+            "discriminator": message.author.discriminator
+        }
+    })
 
 def create_token_cache(username, token):
     filename = hashlib.md5(username.encode('utf-8')).hexdigest()

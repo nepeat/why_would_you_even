@@ -5,7 +5,7 @@ import json
 import logging
 
 from buttcore.database import get_redis
-from buttcore.util import load_commands
+from buttcore.util import load_commands, jsonify_message
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -79,20 +79,8 @@ async def on_message(message):
         await client.send_message(message.channel, 'Core is alive.')
     else:
         for command in commands:
-            if re.search(r"^" + COMMAND_PREFIX + command, message.content, re.I):
-                await redis_client.publish("command:" + command, json.dumps({
-                    "message": {
-                        "id": message.id,
-                        "content": message.content
-                    },
-                    "channel": message.channel.id,
-                    "author": {
-                        "id": message.author.id,
-                        "name": message.author.name,
-                        "discriminator": message.author.discriminator
-                    }
-                }))
             if message.content.strip().lower().startswith(COMMAND_PREFIX + command):
+                await redis_client.publish("command:" + command, jsonify_message(message))
 
     redis_client.close()
 
