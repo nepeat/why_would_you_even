@@ -63,7 +63,7 @@ pubsub.on("message", function (channel, message) {
 			break;
 	}
 
-	if (results && results !== "") {
+	if (results !== "") {
 		try {
 			say(data.channel, results);
 		} catch (e) {
