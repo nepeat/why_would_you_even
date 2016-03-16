@@ -1,6 +1,5 @@
 import discord
 import asyncio
-import os
 import json
 import logging
 
@@ -11,9 +10,6 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 COMMAND_PREFIX = r"!"
-
-if "example.com" in os.environ["DISCORD_USERNAME"]:
-    raise ValueError("Please set your DISCORD_USERNAME to a valid username.")
 
 client = discord.Client()
 commands = {}
