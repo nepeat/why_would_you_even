@@ -11,7 +11,7 @@
 		"eqeqeq": [2, "smart"],
 		"no-console": [0],
 		"space-before-blocks": [2, "always"],
-		"space-after-keywords": [2, "always"],
+		"keyword-spacing": [2],
 		"computed-property-spacing": [2, "never"],
 		"comma-spacing": [2, {"before": false, "after": true}],
 		"no-unused-vars": [2, {"argsIgnorePattern": "^_"}]
