@@ -3,10 +3,14 @@ python:
   - "3.5"
 cache:
   - pip
+addons:
+  apt:
+    packages:
+      - nodejs
+      - npm
 install:
   - pip install flake8
-  - apt-get install nodejs npm
-  - npm install -g eslint
+  - npm install eslint
 script:
   - cd javascript && eslint .
   - cd core && flake8 --exclude=env --max-line-length=120 --ignore=F401,E402 core
