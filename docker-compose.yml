@@ -1,7 +1,7 @@
 version: '2'
 services:
   redis:
-    build: redis
+    image: redis:alpine
   core:
     build: core
     links:
