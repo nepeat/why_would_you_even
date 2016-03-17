@@ -1,4 +1,4 @@
-FROM container4armhf/armhf-alpine:edge
+FROM gliderlabs/alpine:edge
 
 # Set WORKDIR to /app
 WORKDIR /app
