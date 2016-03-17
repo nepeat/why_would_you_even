@@ -10,6 +10,7 @@ bot_commands = {}
 
 # Commands are imported last for the commands dict
 from basecommands.commands import admin # flake8: noqa
+from basecommands.commands import arg # flake8: noqa
 
 # Logging
 logging.basicConfig(level=logging.INFO)
