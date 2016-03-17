@@ -8,4 +8,4 @@ install:
 before_script:
   - export PATH=$(npm bin):$PATH
 script:
-  - flake8 --exclude=env --max-line-length=120 --ignore=F401,E402 core
+  - flake8 --exclude=env --max-line-length=120 core watcher
