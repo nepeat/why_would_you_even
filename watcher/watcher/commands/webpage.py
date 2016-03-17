@@ -1,7 +1,7 @@
-import re
+import requests
 
 from watcher.decorators import command
-from watcher.exceptions import Message
+from watcher.exceptions import Message, WatchError
 from watcher.backends import redis
 from watcher.util import validate_url, hash_url
 
@@ -10,8 +10,12 @@ from watcher.util import validate_url, hash_url
 def watch_webpage(data):
     url = data["message"]["content"].split(" ", 1)[1].strip()
 
-    if not validate_url(url):
-        raise Message("`%s` is not a valid URL." % (url))
+    try:
+        validate_url(url)
+    except (WatchError, requests.exceptions.ConnectionError) as e:
+        raise Message("Someting happened.\n```%s```" % (str(e)))
+
+    #raise Message("`%s` is not a valid URL." % (url))
 
     if redis.hexists("bot:urls:watching", url):
         raise Message("Your URL is already being watched.")

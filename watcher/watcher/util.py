@@ -5,6 +5,7 @@ import time
 import hashlib
 
 from watcher.backends import redis
+from watcher.exceptions import WatchError
 
 RECIEVE_TIMEOUT = 15  # 15 seconds
 legitagents = [
@@ -29,14 +30,9 @@ def notify(text):
 
 def validate_url(url):
     if not url.startswith("http"):
-        return False
+        raise WatchError("URL does not begin with http")
 
-    try:
-        requests.head(url)
-    except:
-        return False
-
-    return True
+    requests.head(url)
 
 
 def hash_url(url):
