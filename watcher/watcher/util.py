@@ -20,8 +20,11 @@ def say(channel, text):
 
 
 def notify(text):
+    notifiers = redis.smembers("bot:notifyme")
+    notifystring = " ".join(["<@%s>" % (x) for x in notifiers]) + " "
+
     for channel in redis.smembers("bot:notification_channels"):
-        say(channel, text)
+        say(channel, notifystring + text)
 
 
 def validate_url(url):

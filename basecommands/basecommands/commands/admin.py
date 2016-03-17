@@ -72,3 +72,17 @@ def notify_delete(data=None):
     redis.srem("bot:notification_channels", data["channel"])
 
     raise Message("Removed this channel for notifications!")
+
+
+@command("notifyme",
+    help="Toggles your ability to recieve channel notifications..",
+    admin=True
+)
+def notifyme(data=None):
+    added = redis.sadd("bot:notifyme", data["author"]["id"])
+
+    if added > 0:
+        raise Message("You have subscribed for ~~spam~~ notifications.")
+    else:
+        redis.srem("bot:notifyme", data["author"]["id"])
+        raise Message("You have escaped the spam floods.")
