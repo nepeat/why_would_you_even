@@ -3,8 +3,8 @@ import asyncio
 import json
 import logging
 
-from buttcore.database import get_redis
-from buttcore.util import load_commands, jsonify_message
+from botcore.database import get_redis
+from botcore.util import load_commands, jsonify_message
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -85,4 +85,4 @@ async def on_message(message):
     redis_client.close()
 
 # Import handlers last
-import buttcore.handlers
+import botcore.handlers

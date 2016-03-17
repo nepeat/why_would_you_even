@@ -1,8 +1,8 @@
 import os
 import logging
 
-from buttcore import client
-from buttcore.util import create_token_cache
+from botcore import client
+from botcore.util import create_token_cache
 
 log = logging.getLogger(__name__)
 

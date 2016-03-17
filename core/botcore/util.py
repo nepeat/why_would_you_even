@@ -4,7 +4,7 @@ import tempfile
 import logging
 import json
 
-from buttcore.database import get_redis
+from botcore.database import get_redis
 
 log = logging.getLogger(__name__)
 

@@ -1,13 +1,13 @@
 import discord
 
-import buttcore
-from buttcore import client, handler
-from buttcore.util import load_commands
+import botcore
+from botcore import client, handler
+from botcore.util import load_commands
 
 
 @handler("reload")
 async def reload(data):
-    await load_commands(buttcore.commands)
+    await load_commands(botcore.commands)
 
 
 @handler("say")

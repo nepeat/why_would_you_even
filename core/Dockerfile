@@ -20,4 +20,4 @@ ADD . /app
 RUN python3 setup.py install
 
 # Define default command.
-CMD ["python3", "buttcore"]
+CMD ["python3", "botcore"]
