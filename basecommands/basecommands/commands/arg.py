@@ -20,7 +20,7 @@ def crypt_76543(text, method):
             ret += " "
             rot_num -= 1
         else:
-            ret += rot(i, rot_num % 26 if method == "decode" else 26 - rot_num % 26)
+            ret += rot(i, rot_num % 26 if method == "encrypt" else 26 - rot_num % 26)
             rot_num -= 1
 
     return ret
