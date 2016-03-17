@@ -17,11 +17,3 @@ services:
       - REDIS_HOST=redis
     cap_drop:
       - ALL
-  phpcmd:
-    build: php
-    links:
-      - redis:redis
-    environment:
-      - REDIS_HOST=redis
-    cap_drop:
-      - ALL

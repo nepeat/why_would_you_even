@@ -4,4 +4,3 @@ env/
 *.md
 node_modules/
 __pycache__/
-vendor/
