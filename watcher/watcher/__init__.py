@@ -10,6 +10,7 @@ bot_commands = {}
 
 # Commands are imported last for the commands dict
 from watcher.commands import twitter # flake8: noqa
+from watcher.commands import webpage # flake8: noqa
 
 # Logging
 logging.basicConfig(level=logging.INFO)
