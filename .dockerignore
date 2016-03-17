@@ -3,3 +3,4 @@ env/
 .git/
 *.md
 __pycache__/
+*egg-info/
