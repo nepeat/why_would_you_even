@@ -30,7 +30,6 @@ def handle_pubsub(message):
     try:
         bot_commands[command]["f"](data)
     except Message as e:
-        log.info(str(e))
         say(data["channel"], str(e))
     except:
         say(data["channel"], "Caught unknown exception processing your command.\n```%s```\n" % (
