@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="botcore",
+    name="nepeatbot_core",
     packages=find_packages(),
     zip_safe=False,
 )
