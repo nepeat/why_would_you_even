@@ -9,7 +9,7 @@ from watcher.backends import twitter, redis
 validate_twitter_username = re.compile(r"^[A-Za-z0-9_]{1,15}$")
 
 
-@command("watch_twitter", help="Adds a Twitter account to the watchlist.", admin=True)
+@command("watch_twitter", help="Adds a Twitter account from the watchlist.", admin=True)
 def watch_twitter(data):
     username = data["message"]["content"].split(" ", 1)[1].strip().replace("@", "")
 
