@@ -9,3 +9,10 @@ services:
     env_file: .env
     environment:
       - REDIS_HOST=redis
+  watcher:
+    build: watcher
+    links:
+      - redis:redis
+    env_file: .env
+    environment:
+      - REDIS_HOST=redis
