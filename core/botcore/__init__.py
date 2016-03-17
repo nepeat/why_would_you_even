@@ -1,5 +1,4 @@
 import discord
-import asyncio
 import json
 import logging
 
@@ -85,4 +84,4 @@ async def on_message(message):
     redis_client.close()
 
 # Import handlers last
-import botcore.handlers
+import botcore.handlers # flake8: noqa
