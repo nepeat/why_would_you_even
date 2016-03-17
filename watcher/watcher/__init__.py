@@ -32,7 +32,7 @@ def handle_pubsub(message):
     except Message as e:
         say(data["channel"], str(e))
     except:
-        say(data["channel"], "Caught unknown exception processing your command.\n```%s```\n" % (
+        say(data["channel"], "Caught unknown exception processing your command. pinging @nepeat\n```%s```\n" % (
             traceback.format_exc()
         ))
         traceback.print_exc()
