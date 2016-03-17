@@ -37,6 +37,5 @@ services:
       - redis:redis
     environment:
       - REDIS_HOST=redis
-    command: "python3 watcher/tasks.py"
     cap_drop:
       - ALL
