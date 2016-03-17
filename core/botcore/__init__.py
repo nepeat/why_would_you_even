@@ -3,7 +3,7 @@ import json
 import logging
 
 from botcore.database import get_redis
-from botcore.util import load_commands, jsonify_message
+from botcore.util import load_commands, jsonify_message, user_is_admin
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 COMMAND_PREFIX = r"!"
 
 client = discord.Client()
+admin_commands = {}
 commands = {}
 core_handlers = {}
 
@@ -43,6 +44,8 @@ async def on_ready():
         client.user.name,
         client.user.id
     ))
+
+    await load_commands(admin_commands, True)
     await load_commands(commands)
 
     redis_client = await get_redis()
@@ -62,7 +65,9 @@ async def on_message(message):
     redis_client = await get_redis()
 
     if message.content.startswith(COMMAND_PREFIX + "help"):
-        output = ""
+        is_admin = await user_is_admin(message)
+
+        output = "**Commands**\n"
 
         for command, meta in commands.items():
             output += "**{command}** - {help}\n".format(
@@ -70,6 +75,13 @@ async def on_message(message):
                 help=meta
             )
 
+        if is_admin:
+            output += "\n**Admin commands**\n"
+            for command, meta in admin_commands.items():
+                output += "**{command}** - {help}\n".format(
+                    command=command,
+                    help=meta
+                )
         if output.strip() == "":
             await client.send_message(message.channel, "No external commands have been loaded.")
         else:
@@ -77,9 +89,20 @@ async def on_message(message):
     elif message.content.startswith(COMMAND_PREFIX + "coreping"):
         await client.send_message(message.channel, 'Core is alive.')
     else:
+        is_admin = await user_is_admin(message)
+
         for command in commands:
             if message.content.strip().lower().startswith(COMMAND_PREFIX + command):
                 await redis_client.publish("command:" + command, jsonify_message(message))
+
+        for command in admin_commands:
+            if message.content.strip().lower().startswith(COMMAND_PREFIX + command):
+                if not is_admin:
+                    await client.send_message(message.channel, "<@%s>, you are not allowed to run admin commands." % (
+                        message.author.id
+                    ))
+                else:
+                    await redis_client.publish("command:" + command, jsonify_message(message))
 
     redis_client.close()
 

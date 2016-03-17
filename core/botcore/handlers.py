@@ -7,6 +7,7 @@ from botcore.util import load_commands
 
 @handler("reload")
 async def reload(data):
+    await load_commands(botcore.admin_commands, True)
     await load_commands(botcore.commands)
 
 

@@ -8,15 +8,21 @@ from botcore.database import get_redis
 
 log = logging.getLogger(__name__)
 
-async def load_commands(commandlist):
+async def load_commands(commandlist, admin=False):
     redis_client = await get_redis()
-    newcommands = await redis_client.hgetall_asdict("bot:commands")
+
+    if admin:
+        newcommands = await redis_client.hgetall_asdict("bot:admincommands")
+    else:
+        newcommands = await redis_client.hgetall_asdict("bot:commands")
 
     log.info("Loaded %s commands." % (len(newcommands)))
     redis_client.close()
 
     commandlist.clear()
     commandlist.update(newcommands)
+
+    redis_client.close()
 
 
 def jsonify_message(message):
@@ -32,6 +38,19 @@ def jsonify_message(message):
             "discriminator": message.author.discriminator
         }
     })
+
+
+async def user_is_admin(message):
+    if message.author.id == "66153853824802816":  # hardcoded @nepeat admin
+        return True
+
+    redis_client = await get_redis()
+
+    try:
+        is_admin = await redis_client.sismember("bot:admins", message.author.id)
+        return is_admin
+    finally:
+        redis_client.close()
 
 
 def create_token_cache(username, token):

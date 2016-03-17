@@ -42,7 +42,10 @@ def handle_pubsub(message):
 def run():
     # Register bot commands with the core service.
     for cmd, meta in bot_commands.items():
-        redis.hset("bot:commands", cmd, meta["help"])
+        if meta["admin"]:
+            redis.hset("bot:admincommands", cmd, meta["help"])
+        else:
+            redis.hset("bot:commands", cmd, meta["help"])
 
     # Subscribe to the core service messages.
     ps = redis.pubsub(ignore_subscribe_messages=True)
