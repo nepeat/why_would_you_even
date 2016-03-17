@@ -75,7 +75,7 @@ async def on_message(message):
             await client.send_message(message.channel, "No external commands have been loaded.")
         else:
             await client.send_message(message.channel, output.strip())
-    elif message.content.startswith(COMMAND_PREFIX + "ping"):
+    elif message.content.startswith(COMMAND_PREFIX + "coreping"):
         await client.send_message(message.channel, 'Core is alive.')
     else:
         for command in commands:
