@@ -6,6 +6,16 @@ from watcher.backends import redis
 from watcher.util import validate_url, hash_url
 
 
+@command("list_urls", help="Lists all currently watched URLs.")
+def list_urls(data=None):
+    message = "**Listed URLs**\n"
+
+    for url in redis.hkeys("bot:urls:watching"):
+        message += "* " + url + "\n"
+
+    raise Message(message)
+
+
 @command("watch_url", help="Adds a URL to the watchlist.", admin=True)
 def watch_webpage(data):
     url = data["message"]["content"].split(" ", 1)[1].strip()
