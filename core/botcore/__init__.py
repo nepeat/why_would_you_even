@@ -28,10 +28,15 @@ async def on_pubsub(ps_message):
 
     try:
         data = json.loads(ps_message.value)
-        action = ps_message.channel.split(":", 2)[1]
+        action = ps_message.channel.split(":", 1)[1]
     except ValueError:
-        log.error("ValueError trying to parse '%s'" % (ps_message.value))
-        return
+        if "__keyspace@0__" not in ps_message.channel:
+            log.error("ValueError trying to parse '%s'" % (ps_message.value))
+            return
+
+    if "__keyspace@0__" in ps_message.channel:
+        action = "reload"
+        data = {}
 
     for handler, callback in core_handlers.items():
         if action == handler:
@@ -49,8 +54,9 @@ async def on_ready():
     await load_commands(commands)
 
     redis_client = await get_redis()
+    await redis_client.config_set("notify-keyspace-events", "Kh")
     subscriber = await redis_client.start_subscribe()
-    await subscriber.psubscribe(["core:*"])
+    await subscriber.psubscribe(["core:*", "__keyspace@0__:bot:commands", "__keyspace@0__:bot:admincommands"])
 
     while True:
         reply = await subscriber.next_published()
