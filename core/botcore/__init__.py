@@ -70,7 +70,7 @@ async def on_message(message):
         output = "**Commands**\n"
 
         for command, meta in commands.items():
-            output += "**{command}** - {help}\n".format(
+            output += "__{command}__ - {help}\n".format(
                 command=command,
                 help=meta
             )
@@ -78,7 +78,7 @@ async def on_message(message):
         if is_admin:
             output += "\n**Admin commands**\n"
             for command, meta in admin_commands.items():
-                output += "**{command}** - {help}\n".format(
+                output += "__{command}__ - {help}\n".format(
                     command=command,
                     help=meta
                 )
